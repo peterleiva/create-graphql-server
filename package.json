@@ -21,6 +21,7 @@
 	"scripts": {
 		"start": "node .",
 		"build": "npm run webpack -- --env mode=production",
+		"build:analyze": "npm run build -- --env presets.analyzer",
 		"dev": "npm run webpack -- --watch --env mode=development --env lint --env clean",
 		"webpack": "webpack",
 		"lint": "eslint .",
