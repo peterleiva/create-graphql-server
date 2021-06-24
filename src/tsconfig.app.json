@@ -1,0 +1,7 @@
+{
+	"extends": "./tsconfig.base.json",
+	"compilerOptions": {
+		"sourceMap": true
+	},
+	"exclude": ["**/__tests__/**/*", "**/__mocks__/**/*", "**/__snapshots__/**/*"]
+}
