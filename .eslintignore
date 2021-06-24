@@ -1,0 +1,14 @@
+# distribution files
+dist
+
+# dependencies
+node_modules
+
+# coverage files
+coverage
+
+# environment files
+.env*
+
+# deps file
+package-lock.json

@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Define project initial architecture
 - Typescript configuration files
 - Build application using webpack in development and production modes
+- Linter (ESLint)
 
 ## [0.1.0] - 2021-06-24
 
