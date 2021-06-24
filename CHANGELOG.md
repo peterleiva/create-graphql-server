@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Typescript configuration files
 - Build application using webpack in development and production modes
 - Linter (ESLint)
+- Test setup with several layers: E2E, Integration and Unit
 
 ## [0.1.0] - 2021-06-24
 
