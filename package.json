@@ -1,6 +1,6 @@
 {
 	"name": "create-graphql-server",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "CLI for creating GraphQL Server with Node.js",
 	"main": "dist/main.js",
 	"repository": {
