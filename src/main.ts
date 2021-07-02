@@ -1,1 +1,3 @@
-console.log("main");
+import bootstrap from "bootstrap";
+
+bootstrap();
