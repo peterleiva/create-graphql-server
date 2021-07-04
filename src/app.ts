@@ -3,12 +3,14 @@ import createError from "http-errors";
 import type { Request, Response } from "express";
 import config from "config";
 import compression from "compression";
+import cors from "cors";
 
 const app = express();
 
 app.set("x-powered-by", config.env("dev"));
 app.set("env", config.env("production") ? "production" : config.env());
 app.use(compression());
+app.use(cors());
 
 app.get("/", (req: Request, res: Response) => {
 	res.send("Olá, mundo");
