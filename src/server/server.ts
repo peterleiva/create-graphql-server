@@ -1,5 +1,6 @@
 import http from "http";
 import chalk from "chalk";
+import { sprintf } from "sprintf-js";
 import address from "address";
 import type { Application } from "express";
 import type { Config } from "config";
@@ -51,20 +52,31 @@ function onListening(config: Config): () => void {
 
 	return () => {
 		console.info(
-			`🚀 Server is ${chalk.red("running").toLowerCase()} on 📦 ${chalk.magenta(
-				config.env()
-			)} environment`
+			sprintf(
+				"%5s %s %s",
+				"🚀",
+				`Server is ${chalk.red("running").toLowerCase()}`,
+				`on 📦 ${chalk.magenta(config.env())} environment`
+			)
 		);
 
 		if (config.env("dev")) {
 			console.info(
-				`🔈 Listening on:\t${styleAddress({ hostname: "localhost", port })}`
+				sprintf(
+					"%5s %-18s%20s",
+					"🔈",
+					"Listening on",
+					styleAddress({ hostname: "localhost", port })
+				)
 			);
-			console.log(`🕸  On your network:\t${styleAddress({
-				hostname: address.ip(),
-				port,
-			})}
-		`);
+			console.info(
+				sprintf(
+					"%5s  %-18s%20s",
+					"🕸",
+					"On your network",
+					styleAddress({ hostname: address.ip(), port })
+				)
+			);
 		}
 	};
 }
