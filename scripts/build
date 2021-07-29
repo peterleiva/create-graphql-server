@@ -1,0 +1,53 @@
+#!/usr/bin/env sh
+##
+# Build in the specific environment and start the application if necessary
+#
+
+usage() {
+	option() {
+		printf "%5.2s%5s%-60s%10s\n" "$1" " " "$2" "$3"
+	}
+
+	echo "usage: $(basename "$0") [options] [environment] [...presets]"
+	echo
+	option '-w' 'watch mode'
+	option '-h' 'print this message'
+}
+
+if ! type npm >&-; then
+	echo "npm command not found" >&2
+	exit 1
+fi
+
+builder=webpack
+presets=
+
+while getopts hw option; do
+	case $option in
+	w)
+		watch='--watch'
+		;;
+	h)
+		usage
+		exit 0
+		;;
+	\?)
+		usage
+		exit 2
+		;;
+	esac
+done
+
+shift $(($OPTIND - 1))
+
+environment="${1:-${NODE_ENV:-'production'}}"
+
+[ $# -ge 1 ] && shift 1
+[ $# -gt 0 ] && printf "%-18s%-42s\n" "👤 presets:" "$*"
+printf "%-18s%-42s\n" "📦 environment:" $environment
+
+for preset in $*; do
+	presets="$presets presets.$preset"
+done
+
+eval npx $builder -- $watch --env mode=$environment $presets

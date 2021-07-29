@@ -20,10 +20,9 @@
 	},
 	"scripts": {
 		"start": "node .",
-		"build": "npm run webpack -- --env mode=production",
-		"build:analyze": "npm run build -- --env presets.analyzer",
-		"dev": "npm run webpack -- --watch --env mode=development --env lint --env clean",
-		"webpack": "webpack",
+		"build": "scripts/build production",
+		"build:analyzer": "npm run build -- analyzer",
+		"dev": "scripts/build -w development",
 		"lint": "eslint .",
 		"typecheck": "concurrently --raw \"npm:typecheck:app\" \"npm:typecheck:tests\"",
 		"typecheck:app": "tsc -p src/tsconfig.app.json --noEmit",
@@ -55,6 +54,7 @@
 		"@types/lodash": "^4.14.170",
 		"@types/node": "^15.6.1",
 		"@types/pino-http": "^5.4.1",
+		"@types/sprintf-js": "^1.1.2",
 		"@typescript-eslint/eslint-plugin": "^4.26.0",
 		"@typescript-eslint/parser": "^4.26.0",
 		"babel-loader": "^8.2.2",
@@ -96,7 +96,8 @@
 		"node.env-inspector": "^0.3.0",
 		"pino": "^6.11.3",
 		"pino-http": "^5.5.0",
-		"source-map-support": "^0.5.19"
+		"source-map-support": "^0.5.19",
+		"sprintf-js": "^1.0.3"
 	},
 	"lint-staged": {
 		"*": [
