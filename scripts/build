@@ -1,31 +1,100 @@
 #!/usr/bin/env sh
+
 ##
 # Build in the specific environment and start the application if necessary
 #
 
 usage() {
 	option() {
-		printf "%5.2s%5s%-60s%10s\n" "$1" " " "$2" "$3"
+		printf "%5.2s%10s%-s %s\n" "$1" " " "$2" "$3"
 	}
 
-	echo "usage: $(basename "$0") [options] [environment] [...presets]"
+	echo "usage: $(basename "$0") [options] [...presets]"
 	echo
+	echo "Options"
 	option '-w' 'watch mode'
+	option '-e' 'environment' '("production"|"development") (default "production")'
 	option '-h' 'print this message'
 }
 
-if ! type npm >&-; then
-	echo "npm command not found" >&2
-	exit 1
-fi
+##
+# Return basepath where webpack store its environment configurations
+# TODO: check other prefixes or basepath
+#
+webpack_env() {
+	basepath=configs/webpack/env
+	prefix=webpack
+	path="$(pwd)/$basepath"
 
-builder=webpack
+	[ $# -gt 0 ] && path="$path/$prefix.$1.js"
+
+	realpath $path
+}
+
+##
+# Check if exists the webpack environment file
+#
+check_environment() {
+	[ -e "$(webpack_env $1)" ] && return 0
+
+	return 1
+}
+
+verify_fallback() {
+	check_environment $fallback
+
+	if [ $? -ne 0 ]; then
+		echo "Before proceed configure webpack production file. At \c"
+		webpack_env $fallback
+		exit 1
+	fi
+}
+
+verify_required_commands() {
+	if ! type npm &>/dev/null; then
+		echo "npm command not found" >&2
+		exit 2
+	fi
+
+	if ! type webpack &>/dev/null; then
+		echo "webpack command not found. Please install webpack first
+		running npm run install" >&2
+		exit 2
+	fi
+}
+
+verify_environment() {
+	check_environment "$environment"
+
+	if [ $? -ne 0 ]; then
+		echo "$(webpack_env $environment) not found" >&2
+		fallback=production
+
+		echo "Using $fallback as a fallback"
+		environment=$fallback $0 "$@"
+		exit 0
+	fi
+}
+
+# set root path of the application as current directory
+cd "$(realpath $(dirname $0)/..)"
+PATH="$(pwd)/node_modules/.bin:$PATH"
+
 presets=
+fallback=production
+: ${environment:=${NODE_ENV:-$fallback}}
+watch=
 
-while getopts hw option; do
+verify_fallback
+verify_required_commands
+
+while getopts hwe: option; do
 	case $option in
 	w)
 		watch='--watch'
+		;;
+	e)
+		environment="$OPTARG"
 		;;
 	h)
 		usage
@@ -33,21 +102,20 @@ while getopts hw option; do
 		;;
 	\?)
 		usage
-		exit 2
+		exit 3
 		;;
 	esac
 done
 
 shift $(($OPTIND - 1))
 
-environment="${1:-${NODE_ENV:-'production'}}"
+verify_environment "$@"
 
-[ $# -ge 1 ] && shift 1
-[ $# -gt 0 ] && printf "%-18s%-42s\n" "👤 presets:" "$*"
+printf "%-18s%-42s\n" "👤 presets:" "$*"
 printf "%-18s%-42s\n" "📦 environment:" $environment
 
-for preset in $*; do
+for preset; do
 	presets="$presets presets.$preset"
 done
 
-eval npx $builder -- $watch --env mode=$environment $presets
+eval webpack -- $watch --env mode=$environment $presets
