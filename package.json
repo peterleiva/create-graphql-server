@@ -20,9 +20,9 @@
 	},
 	"scripts": {
 		"start": "node .",
-		"build": "scripts/build production",
+		"build": "scripts/build -e production",
 		"build:analyzer": "npm run build -- analyzer",
-		"dev": "scripts/build -w development",
+		"dev": "scripts/build -w -e development",
 		"lint": "eslint .",
 		"typecheck": "concurrently --raw \"npm:typecheck:app\" \"npm:typecheck:tests\"",
 		"typecheck:app": "tsc -p src/tsconfig.app.json --noEmit",
@@ -34,9 +34,9 @@
 		"prettier": "prettier --ignore-path .gitignore \".\"",
 		"test": "jest",
 		"test:watch": "npm t -- --watch",
-		"test:app": "jest --config src/test/jest.config.js",
-		"test:e2e": "jest --config e2e/jest.config.js",
-		"prepare": "husky install"
+		"test:app": "npm t -- --config src/test/jest.config.js",
+		"test:e2e": "npm t -- --config e2e/jest.config.js",
+		"prepare": "concurrently --raw \"is-ci || husky install\" \"scripts/build\""
 	},
 	"bugs": {
 		"url": "https://github.com/peterleiva/graphql-server-boilerplate/issues"
@@ -68,6 +68,7 @@
 		"eslint-plugin-markdown": "^2.2.0",
 		"fork-ts-checker-webpack-plugin": "^6.2.10",
 		"husky": "^6.0.0",
+		"is-ci": "^3.0.0",
 		"jest": "^27.0.3",
 		"jest-extended": "^0.11.5",
 		"jest-watch-select-projects": "^2.0.0",
