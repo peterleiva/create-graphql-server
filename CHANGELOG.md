@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - HTTP body compression
 - Cors
 - Build script
+- Docker integration
+  - Add Dockerfile
+  - Use docker-compose to start the application in several environments
+  - Add scripts to help start those actions
 
 ## [0.2.0] - 2021-06-24
 
