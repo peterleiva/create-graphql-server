@@ -20,9 +20,9 @@
 	},
 	"scripts": {
 		"start": "node .",
-		"build": "scripts/build -e production",
+		"build": "scripts/build.sh -e production",
 		"build:analyzer": "npm run build -- analyzer",
-		"dev": "scripts/build -w -e development",
+		"dev": "scripts/build.sh -w -e development",
 		"lint": "eslint .",
 		"typecheck": "concurrently --raw \"npm:typecheck:app\" \"npm:typecheck:tests\"",
 		"typecheck:app": "tsc -p src/tsconfig.app.json --noEmit",
@@ -36,7 +36,7 @@
 		"test:watch": "npm t -- --watch",
 		"test:app": "npm t -- --config src/test/jest.config.js",
 		"test:e2e": "npm t -- --config e2e/jest.config.js",
-		"prepare": "concurrently --raw \"is-ci || husky install\" \"scripts/build\""
+		"prepare": "concurrently --raw \"is-ci || husky install\" \"scripts/build.sh\""
 	},
 	"bugs": {
 		"url": "https://github.com/peterleiva/graphql-server-boilerplate/issues"
