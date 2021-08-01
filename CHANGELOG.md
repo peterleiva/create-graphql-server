@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Add Dockerfile
   - Use docker-compose to start the application in several environments
   - Add scripts to help start those actions
+  - Build and Push github action
 
 ## [0.2.0] - 2021-06-24
 
