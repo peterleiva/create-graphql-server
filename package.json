@@ -11,7 +11,9 @@
 		"boilerplate",
 		"graphql",
 		"apollo-server",
-		"express.js"
+		"express.js",
+		"CLI",
+		"typescript"
 	],
 	"author": "Peter <npmjs@peter.dev.br>",
 	"license": "MIT",
@@ -80,6 +82,7 @@
 		"ts-loader": "^9.2.2",
 		"typescript": "^4.3.2",
 		"webpack": "^5.38.1",
+		"webpack-bundle-analyzer": "^4.4.2",
 		"webpack-cli": "^4.7.0",
 		"webpack-config-organizer": "^0.2.2",
 		"webpack-node-externals": "^3.0.0"
