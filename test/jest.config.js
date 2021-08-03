@@ -6,6 +6,9 @@ module.exports = merge(
 	require("./jest-typescript")(),
 	{
 		name: "app",
-		displayName: "Unit/Integration Tests",
+		displayName: {
+			name: "Unit & Integration",
+			color: "magenta",
+		},
 	}
 );

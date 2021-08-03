@@ -2,7 +2,7 @@
 module.exports = {
 	preset: "ts-jest",
 	testEnvironment: "node",
-	projects: ["./test/jest.config.js", "./e2e/jest.config.js"],
+	projects: ["<rootDir>/test", "<rootDir>/e2e"],
 
 	watchPlugins: [
 		"jest-watch-select-projects",

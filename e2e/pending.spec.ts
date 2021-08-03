@@ -1,1 +1,1 @@
-it.todo("Write your tests in these folder");
+it.todo(`Write your end-to-end test in ${__dirname}`);
