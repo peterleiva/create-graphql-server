@@ -1,7 +1,14 @@
 {
-	"extends": "./tsconfig.base.json",
+	"extends": "../tsconfig.base.json",
 	"compilerOptions": {
+		"baseUrl": "./",
 		"sourceMap": true
 	},
-	"exclude": ["**/__tests__/**/*", "**/__mocks__/**/*", "**/__snapshots__/**/*"]
+	"include": ["**/*"],
+	"exclude": [
+		"node_modules",
+		"**/__tests__/**/*",
+		"**/__mocks__/**/*",
+		"**/__snapshots__/**/*"
+	]
 }

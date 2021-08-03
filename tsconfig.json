@@ -1,9 +1,14 @@
 {
 	"references": [
 		{
-			"path": "./src"
+			"path": "src"
 		},
-		{ "path": "./e2e" }
+		{
+			"path": "test"
+		},
+		{
+			"path": "e2e"
+		}
 	],
 
 	"files": []
