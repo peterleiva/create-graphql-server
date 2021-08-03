@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Add scripts to help start those actions
   - Build and Push github action
 
+### Changed
+
+- Project structure include 3 tsconfig sub-project [e2e](/e2e), [test](/test) and [src](/src/)
+
 ## [0.2.0] - 2021-06-24
 
 ### Added
