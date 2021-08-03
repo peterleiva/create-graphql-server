@@ -14,10 +14,10 @@ const configFile = path.resolve(
  * @param {boolean} [env.lint]
  * @return {import("webpack").Configuration}
  */
-module.exports = function webpackTypescript({ lint }) {
+module.exports = function webpackTypescript() {
 	return {
 		resolve: {
-			extensions: [".ts"],
+			extensions: [".ts", ".tsx"],
 		},
 
 		module: {
@@ -50,7 +50,7 @@ module.exports = function webpackTypescript({ lint }) {
 		plugins: [
 			new ForkTsCheckerWebpackPlugin({
 				typescript: { configFile },
-				eslint: lint && {
+				eslint: {
 					files: ".",
 					options: {
 						ignorePattern: ["__mocks__", "__snapshots__", "__tests__"],
