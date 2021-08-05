@@ -6,6 +6,6 @@ const path = require("path");
 module.exports = {
 	resolve: {
 		modules: [path.resolve(__dirname, "../../../src"), "node_modules"],
-		extensions: [".wasm", ".mjs", ".js", ".json"],
+		extensions: [".wasm", ".mjs", ".js", ".json", ".ts", ".tsx"],
 	},
 };

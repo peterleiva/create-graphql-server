@@ -1,4 +1,5 @@
 const NodemonPlugin = require("nodemon-webpack-plugin");
+const { ProgressPlugin } = require("webpack");
 
 /**
  * @param {object} [env]
@@ -8,8 +9,12 @@ const NodemonPlugin = require("nodemon-webpack-plugin");
 module.exports = function () {
 	return {
 		mode: "development",
-		devtool: "inline-source-map",
+		devtool: "eval",
+		output: {
+			clean: true,
+			devtoolModuleFilenameTemplate: "/[absolute-resource-path]",
+		},
 
-		plugins: [new NodemonPlugin()],
+		plugins: [new NodemonPlugin(), new ProgressPlugin()],
 	};
 };
