@@ -21,5 +21,9 @@ if npm ls --depth=0 typescript &>/dev/null; then
 		typescript@latest \
 		@typescript-eslint/eslint-plugin@latest \
 		@typescript-eslint/parser@latest \
-		ts-jest@latest ts-loader@latest
+		ts-jest@latest ts-loader@latest \
+		@types/core-js@latest
 fi
+
+echo "Upgrading Language packages"
+npm install --save-dev core-js@latest
