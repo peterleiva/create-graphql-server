@@ -10,22 +10,7 @@ usage() {
 	echo
 }
 
-##
-# Validate required commands
-#
-verify_commands() {
-	if ! type docker &>/dev/null; then
-		echo "Install docker"
-		exit 1
-	fi
-
-	if ! type docker-compose &>/dev/null; then
-		echo "Install docker-compose"
-		exit 1
-	fi
-}
-
-verify_commands
+$(dirname $0)/verify-commands.sh docker docker-compose
 
 cd $(realpath $(dirname $0)/../configs/docker)
 
