@@ -55,7 +55,7 @@ function onListening(config: Config): () => void {
 			sprintf(
 				"%5s %s %s",
 				"🚀",
-				`Server is ${chalk.red("running").toLowerCase()}`,
+				`Server is ${chalk.green("running").toLowerCase()}`,
 				`on 📦 ${chalk.magenta(config.env())} environment`
 			)
 		);
