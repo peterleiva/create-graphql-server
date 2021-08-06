@@ -34,7 +34,7 @@
 		"test:watch": "npm t -- --watch",
 		"test:app": "npm t -- --config src/test/jest.config.js",
 		"test:e2e": "npm t -- --config e2e/jest.config.js",
-		"prepare": "concurrently --raw \"is-ci || husky install\" \"scripts/build.sh\""
+		"prepare": "is-ci || concurrently --raw \"husky install\" \"scripts/build.sh\""
 	},
 	"bugs": {
 		"url": "https://github.com/peterleiva/graphql-server-boilerplate/issues"
