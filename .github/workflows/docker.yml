@@ -5,7 +5,7 @@ on:
     workflows: ["Build and Test"]
     branches: ["**"]
     types:
-      - requested
+      - completed
   push:
     tags:
       - "v*.*.*"
