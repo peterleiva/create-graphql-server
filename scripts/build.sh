@@ -50,19 +50,6 @@ verify_fallback() {
 	fi
 }
 
-verify_required_commands() {
-	if ! type npm &>/dev/null; then
-		echo "npm command not found" >&2
-		exit 2
-	fi
-
-	if ! type webpack &>/dev/null; then
-		echo "webpack command not found. Please install webpack first
-		running npm run install" >&2
-		exit 2
-	fi
-}
-
 verify_environment() {
 	check_environment "$environment"
 
@@ -86,7 +73,7 @@ fallback=production
 watch=
 
 verify_fallback
-verify_required_commands
+verify-commands.sh webpack npm
 
 while getopts hwe: option; do
 	case $option in
