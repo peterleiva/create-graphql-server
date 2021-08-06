@@ -24,11 +24,11 @@ usage() {
 webpack_env() {
 	basepath=configs/webpack/env
 	prefix=webpack
-	path="$(pwd)/$basepath"
+	path="$(dirname $0)/../$basepath"
 
 	[ $# -gt 0 ] && path="$path/$prefix.$1.js"
 
-	realpath $path
+	echo $path
 }
 
 ##
@@ -77,8 +77,8 @@ verify_environment() {
 }
 
 # set root path of the application as current directory
-cd "$(realpath $(dirname $0)/..)"
-PATH="$(pwd)/node_modules/.bin:$PATH"
+PATH="$(pwd)/node_modules/.bin:$PATH:$(dirname $0)"
+cd $(dirname $0)/..
 
 presets=
 fallback=production

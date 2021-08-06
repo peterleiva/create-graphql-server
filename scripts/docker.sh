@@ -12,7 +12,7 @@ usage() {
 
 $(dirname $0)/verify-commands.sh docker docker-compose
 
-cd $(realpath $(dirname $0)/../configs/docker)
+cd $(dirname $0)/../configs/docker
 
 environment=${NODE_ENV:-'development'}
 configs=
