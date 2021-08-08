@@ -1,31 +1,35 @@
 import http from "http";
-import chalk from "chalk";
-import { sprintf } from "sprintf-js";
-import address from "address";
 import type { Application } from "express";
 import type { Config } from "config";
-import { Reconnect } from "./reconnect";
-import styleAddress from "./style-address";
+import { AutoStart, ServiceControl } from "lib";
+import { runningLogger, reconnect as errorHandler } from "./handlers";
 
-export interface HttpServer {
-	start: (port?: number) => void;
-	stop: () => void;
-	isRunning: () => boolean;
+type StartOptions = Partial<{
+	port: number;
+}>;
+export interface Server extends ServiceControl<StartOptions> {
+	server: http.Server;
+	start(options?: StartOptions): this;
+	stop(): this;
+	running: boolean;
 }
 
-export function createServer(app: Application, config: Config): HttpServer {
+export function createServer(app: Application, config: Config): Server {
 	const server = http.createServer(app);
-	const port: number = config.port;
+	const { port } = config;
 	app.set("port", port);
 
-	server.on("listening", onListening(config));
+	server.on("listening", runningLogger(config));
 
-	const web: HttpServer = {
-		start(): void {
+	const web: Server = {
+		server,
+		start(): Server {
 			server.listen(port);
+
+			return this;
 		},
 
-		stop(): void {
+		stop(): Server {
 			server.close(err => {
 				if (err) {
 					console.error(`Error closing the http server`);
@@ -34,71 +38,17 @@ export function createServer(app: Application, config: Config): HttpServer {
 
 				console.warn(`❌ Http server closed`);
 			});
+
+			return this;
 		},
 
-		isRunning(): boolean {
+		get running(): boolean {
 			return server.listening;
 		},
 	};
 
-	const reconnect = new Reconnect(web);
+	const reconnect = new AutoStart(web);
 	server.on("error", errorHandler(reconnect));
 
 	return web;
-}
-
-function onListening(config: Config): () => void {
-	const port = config.port;
-
-	return () => {
-		console.info(
-			sprintf(
-				"%5s %s %s",
-				"🚀",
-				`Server is ${chalk.green("running").toLowerCase()}`,
-				`on 📦 ${chalk.magenta(config.env())} environment`
-			)
-		);
-
-		if (config.env("dev")) {
-			console.info(
-				sprintf(
-					"%5s %-18s%20s",
-					"🔈",
-					"Listening on",
-					styleAddress({ hostname: "localhost", port })
-				)
-			);
-			console.info(
-				sprintf(
-					"%5s  %-18s%20s",
-					"🕸",
-					"On your network",
-					styleAddress({ hostname: address.ip(), port })
-				)
-			);
-		}
-	};
-}
-
-function errorHandler(reconnect: Reconnect) {
-	return (err: NodeJS.ErrnoException) => {
-		if (err.code === "EADDRINUSE") {
-			if (!reconnect.exhaustedAttempts) {
-				const delay = reconnect.delay;
-				console.error(`Address in use. Retrying in ${delay / 1_000}s`);
-				reconnect.retry();
-			} else {
-				const retries = reconnect.retries;
-
-				console.error(
-					chalk.red(`Max retries (${retries}) reached. Stopping the server.`)
-				);
-				process.exit(1);
-			}
-		} else {
-			console.error("Error with http server");
-			throw err;
-		}
-	};
 }
