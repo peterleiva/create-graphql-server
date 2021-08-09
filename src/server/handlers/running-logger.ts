@@ -1,8 +1,8 @@
 import type { Config } from "config";
 import { sprintf } from "sprintf-js";
-import styleAddress from "../style-address";
 import address from "address";
 import chalk from "chalk";
+import styleAddress from "./style-address";
 
 /**
  * Inform to the user that the server is running. print the message to shell
