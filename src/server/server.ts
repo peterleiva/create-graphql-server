@@ -4,13 +4,15 @@ import type { Config } from "config";
 import { AutoStart, ServiceControl } from "lib";
 import { runningLogger, reconnect as errorHandler } from "./handlers";
 
-type StartOptions = Partial<{
+type ServerOptions = Partial<{
 	port: number;
 }>;
-export interface Server extends ServiceControl<StartOptions> {
+
+export interface Server extends ServiceControl<ServerOptions> {
 	server: http.Server;
-	start(options?: StartOptions): this;
+	start(options?: ServerOptions): this;
 	stop(): this;
+	restart(options?: ServerOptions): this;
 	running: boolean;
 }
 
@@ -38,6 +40,16 @@ export function createServer(app: Application, config: Config): Server {
 
 				console.warn(`❌ Http server closed`);
 			});
+
+			return this;
+		},
+
+		restart(options: ServerOptions): Server {
+			if (this.running) {
+				this.stop();
+			}
+
+			this.start(options);
 
 			return this;
 		},

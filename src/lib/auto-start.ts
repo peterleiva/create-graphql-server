@@ -36,12 +36,7 @@ export default class AutoStart {
 	retry(): boolean {
 		if (!this.exhaustedAttempts) {
 			setTimeout(() => {
-				if (this.#service.running) {
-					this.#service.stop();
-				}
-
-				this.#service.start();
-
+				this.#service.restart();
 				this.#retries++;
 				this.stepUp();
 			}, this.delay);
