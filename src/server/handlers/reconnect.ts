@@ -1,13 +1,16 @@
 import chalk from "chalk";
-import type { AutoStart } from "lib";
+import { AutoStart, ServiceControl } from "lib";
+import type { onError } from "./types";
 
-export default function errorHandler(reconnect: AutoStart) {
+export default function errorHandler(service: ServiceControl): onError {
+	const reconnect = new AutoStart();
+
 	return (err: NodeJS.ErrnoException): void => {
 		if (err.code === "EADDRINUSE") {
 			if (!reconnect.exhaustedAttempts) {
 				const delay = reconnect.delay;
 				console.error(`Address in use. Retrying in ${delay / 1_000}s`);
-				reconnect.retry();
+				reconnect.retry(() => service.restart());
 			} else {
 				const retries = reconnect.retries;
 

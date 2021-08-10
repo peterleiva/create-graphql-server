@@ -11,7 +11,7 @@ import styleAddress from "./style-address";
  * @returns
  */
 export default function runningLogger(config: Config): () => void {
-	const port = config.port;
+	const { port } = config;
 
 	return () => {
 		console.info(
