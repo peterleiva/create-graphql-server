@@ -1,5 +1,3 @@
-import type { ServiceControl } from "./types";
-
 interface Delay {
 	initial: number;
 	step: number;
@@ -16,13 +14,8 @@ export default class AutoStart {
 	#maxRetries: number;
 	#delay: Delay;
 	#currentDelay: number; // in miliseconds;
-	#service: ServiceControl;
 
-	constructor(
-		service: ServiceControl,
-		{ delay, maxRetries }: Partial<Settings> = {}
-	) {
-		this.#service = service;
+	constructor({ delay, maxRetries }: Partial<Settings> = {}) {
 		this.#maxRetries = maxRetries ?? AutoStart.MAX_RETRIES;
 
 		this.#delay = {
@@ -33,10 +26,10 @@ export default class AutoStart {
 		this.#currentDelay = this.#delay.initial;
 	}
 
-	retry(): boolean {
+	retry(callback?: (...args: unknown[]) => unknown): boolean {
 		if (!this.exhaustedAttempts) {
 			setTimeout(() => {
-				this.#service.restart();
+				callback?.();
 				this.#retries++;
 				this.stepUp();
 			}, this.delay);
