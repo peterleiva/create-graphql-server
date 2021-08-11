@@ -12,10 +12,10 @@ export default function errorHandler(service: ServiceControl): onError {
 				console.error(`Address in use. Retrying in ${delay / 1_000}s`);
 				reconnect.retry(() => service.restart());
 			} else {
-				const retries = reconnect.retries;
-
 				console.error(
-					chalk.red(`Max retries (${retries}) reached. Stopping the server.`)
+					chalk.red(
+						`Max retries (${reconnect.attempts}) reached. Stopping the server.`
+					)
 				);
 				process.exit(1);
 			}
