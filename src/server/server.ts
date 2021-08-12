@@ -1,7 +1,7 @@
 import http from "http";
 import type { Application } from "express";
 import type { Config } from "config";
-import { runningLogger, reconnect as errorHandler } from "./handlers";
+import { runningLogger, errorListener } from "./handlers";
 import { createServerManager, ServerManager } from "./server-manager";
 
 export function createServer(app: Application, config: Config): ServerManager {
@@ -11,8 +11,8 @@ export function createServer(app: Application, config: Config): ServerManager {
 
 	const manager = createServerManager(server, config);
 
-	server.on("listening", runningLogger(config));
-	server.on("error", errorHandler(manager));
+	server.on("listening", runningLogger(manager, config));
+	server.on("error", errorListener(manager));
 
 	return manager;
 }
