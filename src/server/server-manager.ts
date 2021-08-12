@@ -2,12 +2,16 @@ import type { Server } from "http";
 import { ServiceControl } from "lib";
 import type { Config } from "config";
 
-export interface ServerManager extends ServiceControl {
+type ControlOptions = {
+	port: number;
+};
+
+export interface ServerManager extends ServiceControl<ControlOptions> {
 	server: Server;
 	running: boolean;
-	start(): this;
+	start(options?: ControlOptions): this;
 	stop(): this;
-	restart(): this;
+	restart(options?: ControlOptions): this;
 }
 
 export function createServerManager(
@@ -16,8 +20,8 @@ export function createServerManager(
 ): ServerManager {
 	return {
 		server,
-		start(): ServerManager {
-			server.listen(port);
+		start(options?: ControlOptions): ServerManager {
+			server.listen(options?.port ?? port);
 
 			return this;
 		},
@@ -35,12 +39,12 @@ export function createServerManager(
 			return this;
 		},
 
-		restart(): ServerManager {
+		restart(options?: ControlOptions): ServerManager {
 			if (this.running) {
 				this.stop();
 			}
 
-			this.start();
+			this.start(options);
 
 			return this;
 		},
