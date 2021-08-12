@@ -1,6 +1,10 @@
+type Step = {
+	(delay: number): number;
+};
+
 interface Delay {
 	initial: number;
-	step: number;
+	step: Step;
 }
 
 type Settings = {
@@ -18,37 +22,33 @@ export default class AutoStart {
 	constructor({ delay, attempts: maxAttempts }: Partial<Settings> = {}) {
 		this.#maxAttempts = maxAttempts ?? AutoStart.DEFAULT_MAX_ATTEMPTS;
 
-		if (delay?.step && delay.step <= 0) {
-			throw new Error("AutoStart step must be a positive number");
-		}
-
 		delay?.initial && delay?.initial <= 0 && (delay.initial = 0);
 
 		this.#delay = {
 			initial: delay?.initial ?? 1_000,
-			step: delay?.step ?? 2,
+			step: delay?.step ?? (v => v * 2),
 		};
 
 		this.#actualDelay = this.#delay.initial;
 		this.#attempts = 0;
 	}
 
-	retry(callback?: (...args: unknown[]) => unknown): boolean {
-		if (!this.exhaustedAttempts) {
-			setTimeout(() => {
-				callback?.();
-				this.#attempts++;
-				this.stepUp();
-			}, this.delay);
+	retry(callback: (attempt?: number) => boolean): boolean {
+		if (this.exhaustedAttempts) return false;
 
-			return true;
-		}
+		setTimeout(() => {
+			const result = callback(this.attempts);
+			this.#attempts++;
+			this.stepUp();
 
-		return false;
+			!result && this.retry(callback);
+		}, this.delay);
+
+		return true;
 	}
 
 	private stepUp(): void {
-		this.#actualDelay *= this.#delay.step;
+		this.#actualDelay = this.#delay.step(this.#actualDelay);
 	}
 
 	get delay(): number {
