@@ -1,6 +1,7 @@
 import type { Server } from "http";
-import { ServiceControl } from "lib";
 import type { Config } from "config";
+import type { Application } from "express";
+import { ServiceControl } from "lib";
 
 type ControlOptions = {
 	port: number;
@@ -16,12 +17,15 @@ export interface ServerManager extends ServiceControl<ControlOptions> {
 
 export function createServerManager(
 	server: Server,
-	{ port }: Config
+	app: Application,
+	config: Config
 ): ServerManager {
 	return {
 		server,
 		start(options?: ControlOptions): ServerManager {
-			server.listen(options?.port ?? port);
+			const port = options?.port ?? config.port;
+			server.listen(port);
+			app.set("port", port);
 
 			return this;
 		},

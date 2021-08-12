@@ -6,10 +6,7 @@ import { createServerManager, ServerManager } from "./server-manager";
 
 export function createServer(app: Application, config: Config): ServerManager {
 	const server = http.createServer(app);
-	const { port } = config;
-	app.set("port", port);
-
-	const manager = createServerManager(server, config);
+	const manager = createServerManager(server, app, config);
 
 	server.on("listening", runningLogger(manager, config));
 	server.on("error", errorListener(manager));
