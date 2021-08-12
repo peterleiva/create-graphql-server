@@ -8,7 +8,10 @@ import cors from "cors";
 const app = express();
 
 app.set("x-powered-by", config.env("dev"));
-app.set("env", config.env("production") ? "production" : config.env());
+app.set(
+	"env",
+	config.env("prod") || config.env("staging") ? "production" : "development"
+);
 app.use(compression());
 app.use(cors());
 
