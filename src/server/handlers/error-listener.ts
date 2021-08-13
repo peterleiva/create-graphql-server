@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import type { ServerManager } from "../server-manager";
+import type ServerManager from "../server-manager";
 import type { onError } from "./types";
 
 const ALTERNATIVE_PORTS = [3000, 5000, 7000, 8888, 9000, 0];

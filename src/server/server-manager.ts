@@ -7,54 +7,58 @@ type ControlOptions = {
 	port: number;
 };
 
-export interface ServerManager extends ServiceControl<ControlOptions> {
+type ServerManagerSettings = {
 	server: Server;
-	running: boolean;
-	start(options?: ControlOptions): this;
-	stop(): this;
-	restart(options?: ControlOptions): this;
-}
+	app: Application;
+	config: Config;
+};
 
-export function createServerManager(
-	server: Server,
-	app: Application,
-	config: Config
-): ServerManager {
-	return {
-		server,
-		start(options?: ControlOptions): ServerManager {
-			const port = options?.port ?? config.port;
-			server.listen(port);
-			app.set("port", port);
+export default class ServerManager implements ServiceControl<ControlOptions> {
+	readonly #server: Server;
+	readonly #config: Config;
+	readonly #app: Application;
 
-			return this;
-		},
+	constructor({ server, app, config }: ServerManagerSettings) {
+		this.#server = server;
+		this.#config = config;
+		this.#app = app;
+	}
 
-		stop(): ServerManager {
-			server.close(err => {
-				if (err) {
-					console.error(`Error closing the http server`);
-					throw err;
-				}
+	get server(): Server {
+		return this.#server;
+	}
+	get running(): boolean {
+		return this.#server.listening;
+	}
 
-				console.warn(`❌ Http server closed`);
-			});
+	start(options?: ControlOptions): this {
+		const port = options?.port ?? this.#config.port;
+		this.#server.listen(port);
+		this.#app.set("port", port);
 
-			return this;
-		},
+		return this;
+	}
 
-		restart(options?: ControlOptions): ServerManager {
-			if (this.running) {
-				this.stop();
+	stop(): this {
+		this.#server.close(err => {
+			if (err) {
+				console.error(`Error closing the http server`);
+				throw err;
 			}
 
-			this.start(options);
+			console.warn(`❌ Http server closed`);
+		});
 
-			return this;
-		},
+		return this;
+	}
 
-		get running(): boolean {
-			return server.listening;
-		},
-	};
+	restart(options?: ControlOptions): this {
+		if (this.running) {
+			this.stop();
+		}
+
+		this.start(options);
+
+		return this;
+	}
 }

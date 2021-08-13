@@ -3,7 +3,7 @@ import { sprintf } from "sprintf-js";
 import address from "address";
 import chalk from "chalk";
 import styleAddress from "./style-address";
-import type { ServerManager } from "../server-manager";
+import type ServerManager from "../server-manager";
 import { AddressInfo } from "net";
 
 /**
