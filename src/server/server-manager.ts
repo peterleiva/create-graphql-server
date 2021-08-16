@@ -2,6 +2,7 @@ import type { Server } from "http";
 import type { Config } from "config";
 import type { Application } from "express";
 import { ServiceControl } from "lib";
+import { EventEmitter } from "events";
 
 type ControlOptions = {
 	port: number;
@@ -13,12 +14,16 @@ type ServerManagerSettings = {
 	config: Config;
 };
 
-export default class ServerManager implements ServiceControl<ControlOptions> {
+export default class ServerManager
+	extends EventEmitter
+	implements ServiceControl<ControlOptions>
+{
 	readonly #server: Server;
 	readonly #config: Config;
 	readonly #app: Application;
 
 	constructor({ server, app, config }: ServerManagerSettings) {
+		super();
 		this.#server = server;
 		this.#config = config;
 		this.#app = app;
@@ -35,6 +40,7 @@ export default class ServerManager implements ServiceControl<ControlOptions> {
 		const port = options?.port ?? this.#config.port;
 		this.#server.listen(port);
 		this.#app.set("port", port);
+		this.#server.on("listening", () => this.emit("started"));
 
 		return this;
 	}
@@ -45,7 +51,7 @@ export default class ServerManager implements ServiceControl<ControlOptions> {
 				console.error(`Error closing the http server`);
 				throw err;
 			}
-
+			this.emit("stopped");
 			console.warn(`❌ Http server closed`);
 		});
 
