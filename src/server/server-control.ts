@@ -1,68 +1,71 @@
 import type { Server } from "http";
-import type { Config } from "config";
-import type { Application } from "express";
-import { ServiceControl } from "lib";
+import { ServiceControl, ServiceControlEvents } from "lib";
 import { EventEmitter } from "events";
+import { AddressInfo } from "net";
 
 type ControlOptions = {
 	port: number;
 };
 
-type ServerManagerSettings = {
-	server: Server;
-	app: Application;
-	config: Config;
-};
-
-export default class ServerManager
+export default class ServerControl
 	extends EventEmitter
-	implements ServiceControl<ControlOptions>
+	implements ServiceControl<ControlOptions>, ServiceControlEvents
 {
 	readonly #server: Server;
-	readonly #config: Config;
-	readonly #app: Application;
+	#port: number | null;
 
-	constructor({ server, app, config }: ServerManagerSettings) {
+	constructor(server: Server) {
 		super();
 		this.#server = server;
-		this.#config = config;
-		this.#app = app;
+		this.#port = null;
+
+		this.#server.on("error", error => this.emit("error", error));
+		this.#server.on("listening", () => this.emit("started", this.#server));
 	}
 
 	get server(): Server {
 		return this.#server;
 	}
+
 	get running(): boolean {
 		return this.#server.listening;
 	}
 
-	start(options?: ControlOptions): this {
-		const port = options?.port ?? this.#config.port;
+	get port(): number | null {
+		if (!this.running) {
+			return null;
+		}
+
+		return this.#port;
+	}
+
+	start({ port }: ControlOptions): this {
+		this.emit("starting", this.#server);
 		this.#server.listen(port);
-		this.#app.set("port", port);
-		this.#server.on("listening", () => this.emit("started"));
+
+		this.#port =
+			port === 0 ? (this.#server.address() as AddressInfo).port : port;
 
 		return this;
 	}
 
 	stop(): this {
-		this.#server.close(err => {
-			if (err) {
-				console.error(`Error closing the http server`);
-				throw err;
-			}
-			this.emit("stopped");
-			console.warn(`❌ Http server closed`);
-		});
+		if (this.running) {
+			this.#server.close(err => {
+				if (err) {
+					console.error(`Error closing the http server`);
+					throw err;
+				}
+				this.emit("stopped");
+				console.warn(`❌ Http server closed`);
+			});
+		}
 
 		return this;
 	}
 
-	restart(options?: ControlOptions): this {
-		if (this.running) {
-			this.stop();
-		}
-
+	restart(options: ControlOptions): this {
+		this.stop();
 		this.start(options);
 
 		return this;

@@ -1,10 +1,10 @@
 import chalk from "chalk";
-import type ServerManager from "../server-manager";
+import type ServerControl from "../server-control";
 import type { onError } from "./types";
 
 const ALTERNATIVE_PORTS = [3000, 5000, 7000, 8888, 9000, 0];
 
-export default function errorListener(service: ServerManager): onError {
+export default function errorListener(service: ServerControl): onError {
 	const nextPorts = [...ALTERNATIVE_PORTS];
 
 	return (err: NodeJS.ErrnoException): void => {

@@ -3,8 +3,7 @@ import { sprintf } from "sprintf-js";
 import address from "address";
 import chalk from "chalk";
 import styleAddress from "./style-address";
-import type ServerManager from "../server-manager";
-import { AddressInfo } from "net";
+import type ServerControl from "../server-control";
 
 /**
  * Inform to the user that the server is running. print the message to shell
@@ -13,11 +12,17 @@ import { AddressInfo } from "net";
  * @returns
  */
 export default function runningLogger(
-	service: ServerManager,
+	service: ServerControl,
 	config: Config
 ): () => void {
 	return () => {
-		const { port } = service.server.address() as AddressInfo;
+		const port = service.port;
+
+		console.log("port", port);
+		if (!port) {
+			console.error(`Server is not running`);
+			return;
+		}
 
 		console.info(
 			sprintf(
