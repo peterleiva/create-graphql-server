@@ -18,7 +18,6 @@ export default function runningLogger(
 	return () => {
 		const port = service.port;
 
-		console.log("port", port);
 		if (!port) {
 			console.error(`Server is not running`);
 			return;
