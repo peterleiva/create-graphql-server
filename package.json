@@ -97,7 +97,7 @@
 		"lodash": "^4.17.21",
 		"node.env-inspector": "^0.3.0",
 		"pino": "^6.11.3",
-		"pino-http": "^5.5.0",
+		"pino-http": "^5.8.0",
 		"sprintf-js": "^1.0.3"
 	},
 	"lint-staged": {
